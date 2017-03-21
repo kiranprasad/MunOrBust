@@ -38,7 +38,7 @@ void secondpage(){
 	glClear(GL_COLOR_BUFFER_BIT);
 	glClearColor(1.0,0.5,0.0,0.0);
 	glColor3f(0.0,1.0,1.0);
-	bmprender("Terrain goes here");   
+	//	bmprender("Terrain goes here");   
 	glFlush();
 }
 
@@ -51,12 +51,12 @@ void kbrd(unsigned char key, int x, int y){
 }
 
 void display(){
+	//	glutFullScreen();
 	if(flag){
 		strings();}
 	glutKeyboardFunc(kbrd);
 	if(!flag){
 		secondpage();
-		glFlush();
 	}
 }
 
@@ -77,8 +77,7 @@ int main(int argc, char** argv){
 	glutInitDisplayMode(GLUT_RGB|GLUT_SINGLE);
 	glutCreateWindow("PostRedisplay Test"); 
 	init();
-	glutDisplayFunc(display);
-//	glutIdleFunc(display);
+	glutDisplayFunc(&display);
 	glutMainLoop();
 	return 0; 
 }
