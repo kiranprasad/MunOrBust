@@ -22,13 +22,15 @@ void strings(){
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	//TODO Put the strings in a list format
-
-	bmprender(" 	 	      Lunar Rover Simulator");	 	//There are better ways to do this. This is the simplest.
+	glColor3f(0.0,0.0,0.0);
+	bmprender("                    Mun Or Bust");	 	//There are better ways to do this. This is the simplest.
+	glColor3f(1.0,0.0,0.0);
 	bmprender(" "); 						//Placeholders to skip lines.
 	bmprender("Authors: ");
 	bmprender("Kiran Prasad 1PE14CS055");
 	bmprender("Mayur Bhatolia 1PE14CS071");
 	bmprender(" ");
+	glColor3f(0.0,1.0,0.0);
 	bmprender("Press any key to proceed");
 	glFlush();
 }
@@ -38,7 +40,11 @@ void secondpage(){
 	glClear(GL_COLOR_BUFFER_BIT);
 	glClearColor(1.0,0.5,0.0,0.0);
 	glColor3f(0.0,1.0,1.0);
+<<<<<<< HEAD
 	//	bmprender("Terrain goes here");   
+=======
+//	bmprender("Terrain goes here");   
+>>>>>>> e5956b923927a079d4bce0e0f8a96b5ef0037988
 	glFlush();
 }
 
