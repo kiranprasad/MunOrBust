@@ -40,16 +40,13 @@ void secondpage(){
 	glClear(GL_COLOR_BUFFER_BIT);
 	glClearColor(1.0,0.5,0.0,0.0);
 	glColor3f(0.0,1.0,1.0);
-<<<<<<< HEAD
 	//	bmprender("Terrain goes here");   
-=======
 //	bmprender("Terrain goes here");   
->>>>>>> e5956b923927a079d4bce0e0f8a96b5ef0037988
 	glFlush();
 }
 
 void kbrd(unsigned char key, int x, int y){
-	if(int(key) > 0){
+if(int(key) > 0){
 		flag=false;
 		glutPostRedisplay();
 
