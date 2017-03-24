@@ -11,7 +11,7 @@ using namespace std;
 void terrainGen(){
 	/* Using artificial terrain generation */
 
-	GLfloat map[100][100][100], x, z, xmin = 200, zmin = 200, xmax = 300, zmax = 300, y=0;
+	GLfloat map[100][100][100], x, z, xmin = 200, zmin = 200, xmax = 400, zmax = 400, y=0;
 	int iter = 0;
 	float displacement = 0.1; //Change this to make it dynamic with change in iterations Refer to section commented out below.
 	float v = rand();
@@ -30,13 +30,13 @@ void terrainGen(){
 	 */
 	//while(iter <100){
 
-	for(x=xmin;x<=xmax;x+=10)
-		for(z=zmin;z<=zmax;z+=10){
+	for(x=xmin;x<=xmax;x+=5)
+		for(z=zmin;z<=zmax;z+=5){
 			glBegin(GL_LINE_LOOP);
 			glVertex3f(x,0.0,z);
-			glVertex3f(x+10,0.0,z);
-			glVertex3f(x+10,0.0,z+10);
-			glVertex3f(x,0.0,z+10);
+			glVertex3f(x+5,0.0,z);
+			glVertex3f(x+5,0.0,z+5);
+			glVertex3f(x,0.0,z+5);
 			glEnd();
 		}
 	glFlush();
