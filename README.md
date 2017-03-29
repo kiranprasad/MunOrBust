@@ -11,4 +11,4 @@ Released as GNU LGPL software.
 **29/03/2017**
 TGA module is not in use any longer.
 Terrain is now generated using fault algorithm.
-![Imperial Star Destroyer] (https://github.com/kiranprasad/MunOrBust/blob/dev/sampleterrain.png)
+Imperial Star Destroyer! -> (https://github.com/kiranprasad/MunOrBust/blob/dev/sampleterrain.png)
