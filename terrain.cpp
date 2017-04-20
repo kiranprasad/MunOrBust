@@ -14,7 +14,7 @@ GLdouble terrainviewer[] = {400.0,50.0,400.0};
 int x, z, xmin = 0, zmin = 0, xmax = 400, zmax = 400;
 GLfloat map[500][500]={0};	//map[][] stores the height values for each intersection point on the grid.
 int iter = 0;
-float theta[]={5.0,0.0,5.0};
+float theta[]={0.0,0.0,0.0};
 
 void terrainCalc(){	
 	GLfloat dely;
@@ -93,17 +93,18 @@ void keymove(int key, int x, int y){
 		if(terrainviewer[0]<=400.0 && terrainviewer[2]<=400.0){ 
 		terrainviewer[0]-=1.0;
 		terrainviewer[2]-=1.0;
+		terrainviewer[1]+=0.5;
 			}
 		}
 	else if(key==GLUT_KEY_DOWN)
 		{if(terrainviewer[0]>=0.0 && terrainviewer[2]>=0.0 && terrainviewer[0]<400.0 && terrainviewer[2]<400.0){
 		terrainviewer[0]+=1.0;
-		terrainviewer[2]+=1.0;}}
+		terrainviewer[2]+=1.0;
+		terrainviewer[1]-=0.5;}}
 /*	else if(key==GLUT_KEY_LEFT) {turn(GLUT_KEY_LEFT); terrainGen();}
 	else if(key==GLUT_KEY_RIGHT){turn(GLUT_KEY_RIGHT); terrainGen();}*/
 glutPostRedisplay();
 }
-
 
 /*void mouse(int but, int state, int x, int y){
 if(but==GLUT_LEFT_BUTTON && state==GLUT_DOWN){
