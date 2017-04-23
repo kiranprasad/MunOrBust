@@ -1,7 +1,7 @@
 /**********************Artificial terrain generator using fault algorithm********************/
 
-#include<iostream>
-#include<GL/glut.h>
+#include <iostream>
+#include <GL/glut.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -37,6 +37,26 @@ void terrainCalc(){
 
 		iter++;
 	}
+
+	surfnormals();		//Surface normal evaluation function
+
+}
+
+
+void surfnormals(){		/*Evaluate surface normals for each vertex and average for each quad surface unit.*/
+
+
+	GLfloat normal[500][500]={0};		//Store the average normal for each surface quad unit
+	int i, j;
+
+	for(i=xmin;x<=xmax;x+=1)
+		for(j=zmin;j<=zmax;j+=1){
+
+				/*Line equations for each edge of the quad*/
+
+
+
+				}
 
 }
 
