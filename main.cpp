@@ -2,66 +2,12 @@
 #include <stdlib.h>
 #include <GL/glut.h>
 #include <string.h>
+#include "msb.h"
 //#define step 10
 
 using namespace std;
 
-int rx = 10, ry = 150; 			//If these values look arbitrary to you, that is probably because they are arbitrary.
 bool flag = true;
-
-void bmprender(const char* str){	//Render strings
-	glRasterPos2f(rx,ry);
-	while(*str!='\0'){
-		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *str++);  //Times *old* roman as it turns out.
-	}
-	ry-=10;
-}
-
-//TODO: Do away with this entire function.
-void strings(){
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	//TODO Put the strings in a list format
-	glColor3f(0.0,0.0,0.0);
-	bmprender("                    Mun Or Bust");	 	//There are better ways to do this. This is the simplest.
-	glColor3f(1.0,0.0,0.0);
-	bmprender(" "); 						//Placeholders to skip lines.
-	bmprender("Authors: ");
-	bmprender("Kiran Prasad 1PE14CS055");
-	bmprender("Mayur Bhatolia 1PE14CS071");
-	bmprender(" ");
-	glColor3f(0.0,1.0,0.0);
-	bmprender("Press any key to proceed");
-	glFlush();
-}
-
-
-void secondpage(){
-	glClear(GL_COLOR_BUFFER_BIT);
-	glClearColor(1.0,0.5,0.0,0.0);
-	glColor3f(0.0,1.0,1.0);
-	//	bmprender("Terrain goes here");   
-//	bmprender("Terrain goes here");   
-	glFlush();
-}
-
-void kbrd(unsigned char key, int x, int y){
-if(int(key) > 0){
-		flag=false;
-		glutPostRedisplay();
-
-	}
-}
-
-void display(){
-	//	glutFullScreen();
-	if(flag){
-		strings();}
-	glutKeyboardFunc(kbrd);
-	if(!flag){
-		secondpage();
-	}
-}
 
 void init(){
 	glClearColor(1.0,1.0,1.0,1.0);
@@ -72,15 +18,101 @@ void init(){
 	glPointSize(5.0);
 }
 
+void bmprender(const char* str, GLfloat x, GLfloat y)					//Render strings using bitmap fonts.
+	{	
+		glRasterPos2f(x,y);
+		while(*str!='\0'){
+			glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *str++);  //Bitmap font Times Roman. Stroke fonts are overkill.
+	}
+}
+
+void strings(){
+	glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
+	glColor3f(0.0,0.0,0.0);
+	bmprender("Mun Or Bust", 30.0, 90.0);	 	
+	glColor3f(1.0,0.0,0.0);
+	bmprender("Authors:",32,82);
+	bmprender("Kiran Prasad 1PE14CS055",32,75);
+	bmprender("Mayur Bhatolia 1PE14CS071",32,70);
+	glColor3f(0.0,1.0,0.0);
+	bmprender("Press any key to proceed",32,60);
+	glFlush();
+}
+
+
+void displaymain(){
+		init();
+		strings();
+
+}
+
+void windowSpecial(int key,int x,int y){
+	
+	if(key==GLUT_KEY_UP)
+	{
+		
+		y_r+=3;	
+	}
+	if(key== GLUT_KEY_DOWN)
+	{
+		y_r-=3;
+	}
+	if(key==GLUT_KEY_RIGHT) x_r+=3;
+	if(key==GLUT_KEY_LEFT) x_r-=3;
+
+
+	display();
+
+}
+
+void  kb(unsigned char key, int x, int y)
+{   
+	if(key=='n')
+		{flag = false;
+		glutPostRedisplay();	
+	}
+	if(key=='+') {movcord[1]--;display();}
+	if(key=='-') {movcord[1]++;display();}
+	if(key=='*')
+	{
+		movcord[0]+=5*cos(-1*x_r*3.14/180.0);
+		movcord[2]+=5*sin(1*x_r*3.14/180.0);
+		display();
+	}
+	if(key=='/')
+	{
+		movcord[0]-=5*cos(-1*x_r*3.14/180.0);
+		movcord[2]-=5*sin(1*x_r*3.14/180.0);
+		display();
+	}
+}
+
+void displayall(){
+	glClear(GL_COLOR_BUFFER_BIT);
+	// glutFullScreen();
+	
+	if(flag)
+		displaymain();
+	else
+		display();
+}
+
+
+
 int main(int argc, char** argv){
-	/* Probably should write something here. */
-	glutInit(&argc, argv);
-	glutInitWindowSize(500,500);
-	glutInitWindowPosition(0,0);
-	glutInitDisplayMode(GLUT_RGB|GLUT_SINGLE);
-	glutCreateWindow("PostRedisplay Test"); 
-	init();
-	glutDisplayFunc(&display);
-	glutMainLoop();
+		glutInit(&argc, argv);
+		glutInitDisplayMode(GLUT_RGBA|GLUT_SINGLE);
+		glutInitWindowSize(500,500);
+		glutCreateWindow("Lunar Surface!");
+		initLights();
+		initSky();
+  		glutDisplayFunc(displayall);
+	 	glutReshapeFunc(displayReshape);
+	 	glutKeyboardFunc(kb);
+		glutMotionFunc(handleMouse);
+		glutPassiveMotionFunc(passiveMouse);
+		glutIdleFunc(displayall);
+		glutSpecialFunc(windowSpecial);
+		glutMainLoop();
 	return 0; 
 }
