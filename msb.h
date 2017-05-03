@@ -52,8 +52,8 @@ void initLights()
 	glLightModelfv(GL_LIGHT_MODEL_TWO_SIDE, twoModel);
  	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, whiteSpecularMaterial);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mShininess);
-	// glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, whiteSpotlight);
-	// glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 90);
+	glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, whiteSpotlight);
+	glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 90);
 }
 
 void Draw_Skybox(float x, float y, float z, float width, float height, float length){
@@ -146,24 +146,24 @@ void display(){
 
 void displayReshape(int width,int height)
 {	
-	if(sumfuk==0){
+	// if(sumfuk==0){
 	glViewport(0,0,width,height);						
 	glMatrixMode(GL_PROJECTION);						
 	glLoadIdentity();
-	gluPerspective(65,(GLfloat)width/(GLfloat)height,0.01f,1000.0f);
+	gluPerspective(65,(GLfloat)width/(GLfloat)height,0.01f,900.0f);
 	glMatrixMode(GL_MODELVIEW);						
 	glLoadIdentity();
-	}
-	else{			
-	glViewport(0,0,width, height);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	if(height<=width)
-		glFrustum(-2.0,2.0,-2*(GLfloat)width/(GLfloat)height,2*(GLfloat)width/(GLfloat)height, 3.0,100.0);
-	else
-		glFrustum(-2.0,2.0,-2*(GLfloat)width/(GLfloat)height,2*(GLfloat)width/(GLfloat)height, 3.0,100.0);
-	glMatrixMode(GL_MODELVIEW);
-}
+// 	}
+// 	else{			
+// 	glViewport(0,0,width, height);
+// 	glMatrixMode(GL_PROJECTION);
+// 	glLoadIdentity();
+// 	if(height<=width)
+// 		glFrustum(-2.0,2.0,-2*(GLfloat)width/(GLfloat)height,2*(GLfloat)width/(GLfloat)height, 3.0,300.0);
+// 	else
+// 		glFrustum(-2.0,2.0,-2*(GLfloat)width/(GLfloat)height,2*(GLfloat)width/(GLfloat)height, 3.0,300.0);
+// 	glMatrixMode(GL_MODELVIEW);
+// }
 }
 
 

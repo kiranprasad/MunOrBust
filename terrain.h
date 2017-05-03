@@ -11,7 +11,7 @@
 using namespace std;
 
 void terrainGen();
-
+GLint num = rand()%4;
 GLint moonsurface[4];
 GLdouble vectormat[2][3]={{-5,0,-5},{-5,0,5}};
 GLdouble terrainviewer[] = {400.0,50.0,400.0};
@@ -185,7 +185,6 @@ void terrainCalc(){
 	moonsurface[3] = LoadBMP("BMP/surf4.bmp");
 	GLfloat dely;
 	float v, a, b, c, d;
-	srand(time(NULL));
 	while(iter <100){
 		(iter>50)?dely+=1/iter:dely=1; //Amazingly dynamic displacement formula 10/10. Don't ask don't tell shh. I should stop writing edgy comments.
 		v= rand();
@@ -237,8 +236,7 @@ void terrainGen(){
 	//glutFullScreen();
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
-	//normals[x][z].vecangle();
-	gluLookAt(terrainviewer[0],terrainviewer[1]+1.50,terrainviewer[2],terrainviewer[0]-5,terrainviewer[1]+5.0,terrainviewer[2]-5, 0,400,0);
+	gluLookAt(terrainviewer[0],terrainviewer[1]+1.5,terrainviewer[2],terrainviewer[0]-5,terrainviewer[1]+5.0,terrainviewer[2]-5, 0,400,0);
 	 glRotatef(theta[0],1.0,0.0,0.0);
 	 glRotatef(theta[1],0.0,1.0,0.0);
 	 glRotatef(theta[2],0.0,0.0,1.0);	

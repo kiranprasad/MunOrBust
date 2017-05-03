@@ -9,6 +9,7 @@ using namespace std;
 bool flag = true;
 
 void init(){
+	srand(time(NULL));
 	glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
 	glClearColor(0.0,0.0,0.0,1.0);
 	glMatrixMode(GL_PROJECTION);
@@ -97,8 +98,8 @@ void  kb(unsigned char key, int x, int y)
 	if(key=='w'){
 
 		if(terrainviewer[0]<=400.0 && terrainviewer[2]<=400.0){ 
-		terrainviewer[0]-=0.1;
-		terrainviewer[2]-=0.1;
+		terrainviewer[0]-=0.25;
+		terrainviewer[2]-=0.25;
 		centre[0]-=1.0;
 		centre[2]-=1.0;
 		quadcalc();
@@ -108,12 +109,31 @@ void  kb(unsigned char key, int x, int y)
 	if(key=='s'){
 
 		if(terrainviewer[0]>0.0 && terrainviewer[2]>0.0 && terrainviewer[0]<400.0 && terrainviewer[2]<400.0){
-			terrainviewer[0]+=0.1;
-			terrainviewer[2]+=0.1;
+			terrainviewer[0]+=0.25;
+			terrainviewer[2]+=0.25;
 			quadcalc();
 		}
 
 	}
+
+
+	if(key=='d'){
+
+		glRotatef(3.0f,0.0,1.0,0.0);
+		glutPostRedisplay();
+	}
+
+
+	if(key=='a'){
+
+		glRotatef(-3.0f,0.0,1.0,0.0);
+		glutPostRedisplay();	
+	}
+
+
+
+
+
 }
 
 void displayall(){
