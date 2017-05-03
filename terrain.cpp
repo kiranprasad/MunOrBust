@@ -12,6 +12,7 @@ using namespace std;
 
 void terrainGen();
 
+GLint moonsurface[4];
 GLdouble vectormat[2][3]={{-5,0,-5},{-5,0,5}};
 GLdouble terrainviewer[] = {400.0,50.0,400.0};
 GLdouble move[] = {400.0,50.0,400.0};
@@ -26,6 +27,30 @@ GLdouble angle, dotproduct, mag;
 bool pausesim = true;
 int rx = 10, ry = 150, upcount=0, downcount=0;
 const char* str = "PAUSE";
+
+
+/*********************Lighting initialization****************/
+void initLights()
+{
+
+	GLfloat whiteSpecularMaterial[] = {10.0,10.0,10.0},light_post0[]={100.0,-10.0,10.0,1.0};
+	GLfloat whiteSpecularLight[] = {10.0, 10.0, 10.0},blackAmbientLight[] = {0.3, 0.3, 0.3};
+	GLfloat whiteDiffuseLight[] = {1.0, 1.0, 1.0},mShininess[] = {50},twoModel[]={GL_TRUE}; 
+	GLfloat whiteSpotlight[] = {0.0,100.0,0.0};
+	glEnable (GL_DEPTH_TEST);
+	glEnable (GL_LIGHTING);
+        glEnable (GL_LIGHT0);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, whiteSpecularLight);
+   	glLightfv(GL_LIGHT0, GL_AMBIENT, blackAmbientLight);
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, whiteDiffuseLight);
+	glLightfv(GL_LIGHT0, GL_POSITION, light_post0);
+	glLightModelfv(GL_LIGHT_MODEL_TWO_SIDE, twoModel);
+ 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, whiteSpecularMaterial);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mShininess);
+	glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, whiteSpotlight);
+	glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 90);
+}
+
 
 /************************************norm class starts here****************************************/
 
@@ -92,10 +117,47 @@ void norm::elevation(){
 /******************************End of class norm***********************/
 
 
+/*************************BMPLoader start****************************/
+
+GLuint LoadBMP(const char *fileName)
+{
+	FILE *file;
+	unsigned char header[54],*data;
+	unsigned int dataPos,size,width, height;
+	file = fopen(fileName, "rb");
+	fread(header, 1, 54, file);				//Windows BMP begin with 54 byte header
+	dataPos		= *(int*)&(header[0x0A]);	//dec10, Actual BMP data
+	size		= *(int*)&(header[0x22]);	//dec34, BMP Size
+	width		= *(int*)&(header[0x12]);	//dec18, Image Width
+	height		= *(int*)&(header[0x16]);	//dec22, Image Height
+	if (size == NULL)
+		size = width * height * 3;
+	if (dataPos == NULL)
+		dataPos = 54;
+	data = new unsigned char[size];
+	fread(data, 1, size, file);
+	fclose(file);
+	GLuint texture;
+	glGenTextures(1, &texture);				//Generate (allocate) 1 texture name
+	glBindTexture(GL_TEXTURE_2D, texture);	//Bind the 2D texture
+
+
+
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	//MAG filter
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);	//MIN filter
+	glTexParameterf(GL_TEXTURE_2D, 	GL_GENERATE_MIPMAP, GL_TRUE);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, data); //target, level, internalFormat, width, height,border, format, type, data 
+	return texture;
+}
+
+/*************************BMPLoader end****************************/
+
 void quadcalc(){
 
 	xter = terrainviewer[0];
 	zter = terrainviewer[2];
+
+	GLint grid[4][2];
 
 	if(xter<10)
 	{
@@ -128,14 +190,26 @@ void quadcalc(){
 	cout << "quadcalc"<<endl<<xter << " "<<zter<<endl<<"end of quadcalc"<<endl;
 	normals[xter][zter].elevation();
 
+	// if(xter%5){
+
+	// 	grid[0][0] = xter - (xter%5);
+	// 	grid[1][0] = xter 2+ (5-(xter%5));
+
+	// } 
+
 
 }
 
 
-void terrainCalc(){	
+void terrainCalc(){
+
+	moonsurface[0] = LoadBMP("BMP/surf1.bmp");
+	moonsurface[1] = LoadBMP("BMP/surf2.bmp");
+	moonsurface[2] = LoadBMP("BMP/surf5.bmp");
+	moonsurface[3] = LoadBMP("BMP/surf4.bmp");
 	GLfloat dely;
 	float v, a, b, c, d;
-	srand(time(NULL)+rand());
+	srand(time(NULL));
 	while(iter <100){
 		(iter>50)?dely+=1/iter:dely=1; //Amazingly dynamic displacement formula 10/10. Don't ask don't tell shh. I should stop writing edgy comments.
 		v= rand();
@@ -167,8 +241,8 @@ void terrainCalc(){
 
 }
 
-void terrainGen()
-{	
+void terrainGen(){
+	glShadeModel(GL_SMOOTH);
 	while(!pausesim){
 		glClear(GL_COLOR_BUFFER_BIT);
 		glColor3f(1.0,1.0,1.0);
@@ -187,40 +261,54 @@ void terrainGen()
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 	//normals[x][z].vecangle();
-	gluLookAt(terrainviewer[0],terrainviewer[1]+0.75,terrainviewer[2],terrainviewer[0]-5,terrainviewer[1]+5.0,terrainviewer[2]-5, 0,400,0);
+	gluLookAt(terrainviewer[0],terrainviewer[1]+1.50,terrainviewer[2],terrainviewer[0]-5,terrainviewer[1]+5.0,terrainviewer[2]-5, 0,400,0);
 	 glRotatef(theta[0],1.0,0.0,0.0);
 	 glRotatef(theta[1],0.0,1.0,0.0);
 	 glRotatef(theta[2],0.0,0.0,1.0);	
-
-
-
+	 
+	 glDisable(GL_DEPTH_TEST);
+	 glEnable(GL_TEXTURE_2D);
 	for(x=xmin;x<=xmax;x+=5)	//Loop to draw the primitives
 		for(z=zmin;z<=zmax;z+=5){
-			glBegin(GL_POLYGON);
-			glColor3f(0.7,0.7,0.7);
+			glBindTexture(GL_TEXTURE_2D,moonsurface[2]);
+			glBegin(GL_QUADS);
+			glTexCoord2f(0.0,0.0);
+//			glColor3f(0.3,0.3,0.3);
 			glVertex3f(x,map[x][z],z);
-			glColor3f(0.5,0.5,0.5);
+			glTexCoord2f(0.0,1);
 			glVertex3f(x+5,map[x+5][z],z);
-			glColor3f(0.7,0.7,0.7);
+//			glColor3f(0.7,0.7,0.7);
+			glTexCoord2f(0.5,0.7);
 			glVertex3f(x+5,map[x+5][z+5],z+5);
-			glColor3f(0.3,0.3,0.3);
+			glTexCoord2f(0.3,0.0);
 			glVertex3f(x,map[x][z+5],z+5);
 			glEnd();
 		}
+	glDisable(GL_TEXTURE_2D);
 	glFlush();
-
-glutSwapBuffers();
+	glutSwapBuffers();
 }
 
 //F.S. Hill textbook
 
 void size(int width,int height){
 
-	glViewport(0,0,width, height);
-	glMatrixMode(GL_PROJECTION);
+	// glViewport(0,0,width, height);
+	// glMatrixMode(GL_PROJECTION);
+	// glLoadIdentity();
+	// if(height<=width)
+	// 	glFrustum(-2.0,2.0,-2*(GLfloat)width/(GLfloat)height,2*(GLfloat)width/(GLfloat)height, 3.0,200.0);
+	// else
+	// 	glFrustum(-2.0,2.0,-2*(GLfloat)width/(GLfloat)height,2*(GLfloat)width/(GLfloat)height, 3.0,200.0);
+	// glMatrixMode(GL_MODELVIEW);
+
+
+	glViewport(0,0,width,height);						
+	glMatrixMode(GL_PROJECTION);						
 	glLoadIdentity();
-	glFrustum(-2.0,2.0,-2*(GLfloat)width/(GLfloat)height,2*(GLfloat)width/(GLfloat)height, 2.0,200.0);
-	glMatrixMode(GL_MODELVIEW);
+	gluPerspective(65,(GLfloat)width/(GLfloat)height,0.01f,900.0f);
+	glMatrixMode(GL_MODELVIEW);						
+	glLoadIdentity();
 
 }
 
@@ -258,7 +346,7 @@ void keymove(int key, int x, int y){
 		}}
 	else if(key==GLUT_KEY_LEFT) 
 		{
-		theta[1]+=0.25;
+		theta[1]+=0.1;
 		glPushMatrix();
 		glRotatef(theta[1],0.0,1.0,0.0);
 		 terrainGen();
@@ -269,7 +357,7 @@ void keymove(int key, int x, int y){
 		{
 
 			glRotatef(theta[1],0.0,1.0,0.0);
-			theta[1]+=-0.25;
+			theta[1]+=-0.1;
 		terrainGen();	
 		 return;	
 		}
@@ -325,21 +413,23 @@ terrainGen();
 
 int main(int argc, char** argv){
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGBA|GLUT_DEPTH);
+	glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGB|GLUT_DEPTH);
 	glutInitWindowPosition(0,0);
 	glutInitWindowSize(500,500);
 	glutCreateWindow("Terrain");
+	glutFullScreen();
 	terrainCalc();
 	quadcalc();
+	initLights();
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0,0.0,0.0,1.0);
+	glEnable(GL_DEPTH_TEST);
 	glutReshapeFunc(size);
 	glutDisplayFunc(terrainGen);
 	glutIdleFunc(terrainGen);
 	glutSpecialFunc(keymove);
 	glutKeyboardFunc(kbrd);
 //	glutMouseFunc(mouse);
-	glEnable(GL_DEPTH_TEST);
 	glutMainLoop();
 	return 0;
 
