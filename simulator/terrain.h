@@ -16,7 +16,7 @@ GLint moonsurface[4];
 GLdouble vectormat[2][3]={{-5,0,-5},{-5,0,5}};
 GLdouble terrainviewer[] = {400.0,50.0,400.0};
 GLdouble move[] = {400.0,50.0,400.0};
-int x, z, xmin = 0, zmin = 0, xmax = 400, zmax = 400;
+int x, z, checkflag=0, xmin = 0, zmin = 0, xmax = 400, zmax = 400;
 GLfloat map[1000][1000]={0};	//map[][] stores the height values for each intersection point on the grid.
 int iter = 0;
 int quadx, quadz, xter, zter;
@@ -54,8 +54,12 @@ int norm::cnt = 0;
 
 			this->VecX = ((vectormat[0][1] * vectormat[1][2]) - (vectormat[1][1] * vectormat[0][2]));
 			this->VecZ = ((vectormat[0][0] * vectormat[1][1]) - (vectormat[1][0] * vectormat[0][1]));
-			this->VecConst = VecX*x+VecY*map[x][z]+VecZ*z;
-			cout << this->VecX<<" "<<this->VecY<<" "<<this->VecZ<<endl;
+			this->VecConst = this->VecX*x+this->VecY*map[x][z]+this->VecZ*z;
+			this->VecX /= this->VecConst;
+			this->VecY /= this->VecConst;
+			this->VecZ /= this->VecConst;
+			this->VecConst=1;
+			//cout << this->VecX<<" "<<this->VecY<<" "<<this->VecZ<<endl;
 	}
 
 	void norm::vecangle(){
@@ -84,7 +88,7 @@ int norm::cnt = 0;
 void norm::elevation(){
 
 	terrainviewer[1] = (this->VecConst - this->VecX * terrainviewer[0] - this->VecZ * terrainviewer[2])/VecY;
-	cout <<"norm::elevation"<<endl<< this->VecConst<<endl<<this->VecX<<endl<<this->VecY<<endl<<this->VecZ<<endl<<"end of norm::elevation"<<endl;
+	//cout <<"norm::elevation"<<endl<< this->VecConst<<endl<<this->VecX<<endl<<this->VecY<<endl<<this->VecZ<<endl<<"end of norm::elevation"<<endl;
 	terrainGen();
 
 
@@ -130,41 +134,37 @@ GLuint LoadBMP(const char *fileName)
 
 void quadcalc(){
 
-	xter = terrainviewer[0];
-	zter = terrainviewer[2];
+	xter = int(terrainviewer[0]);
+	zter = int(terrainviewer[2]);
 
-	GLint grid[4][2];
+	// GLint grid[4][2];
 
 	if(xter<10)
 	{
 		quadx = xter;
 	}
-	else if (xter<100)
+	else //(xter<100)
 	{
 		quadx = xter%10;
-	}
-	else
-	{
-		quadx = xter%100;
 	}
 
 	if(zter<10)
 	{
 		quadz = zter;
 	}
-	else if (zter<100)
+	else //(zter<100)
 	{
 		quadz = zter%10;
 	}
-	else
-	{
-		quadz = zter%100;
-	}
 
-	quadx-5>0?xter-=(quadx-5):xter+=(quadx-5);
-	quadz-5>0?zter-=(quadz-5):zter+=(quadz-5);
-	cout << "quadcalc"<<endl<<xter << " "<<zter<<endl<<"end of quadcalc"<<endl;
-	normals[xter][zter].elevation();
+	xter-=(quadx-5);
+	zter-=(quadz-5);
+
+	// quadx-5>0?xter-=(quadx-5):xter-=(quadx-5);
+	// quadz-5>0?zter-=(quadz-5):zter-=(quadz-5);
+	
+	//cout << "quadcalc"<<endl<<xter << " "<<zter<<endl<<"end of quadcalc"<<endl;
+	//normals[xter][zter].elevation();
 
 	// if(xter%5){
 
@@ -220,7 +220,7 @@ void terrainGen(){
 	glEnable(GL_DEPTH_TEST);
 	glShadeModel(GL_SMOOTH);
 	while(!pausesim){
-		glClear(GL_COLOR_BUFFER_BIT);
+		//glClear(GL_COLOR_BUFFER_BIT);
 		glColor3f(1.0,1.0,1.0);
 		glRasterPos2f(rx,ry);
 		while(*str!='\0'){
@@ -232,10 +232,16 @@ void terrainGen(){
 	}
 
 	int x, z;	
-	cout << terrainviewer[1]<<endl;
-	//glutFullScreen();
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
+	if(checkflag<5){
+	checkflag++;
+	quadcalc();	
+	terrainviewer[1] = abs(map[int(xter)][int(zter)]);
+	}
+	else
+		checkflag = 0;
+	cout <<terrainviewer[0]<<" "<<terrainviewer[2]<<" "<<xter<<" "<<zter<<" "<< terrainviewer[1]<<endl;
 	gluLookAt(terrainviewer[0],terrainviewer[1]+1.5,terrainviewer[2],terrainviewer[0]-5,terrainviewer[1]+5.0,terrainviewer[2]-5, 0,400,0);
 	 glRotatef(theta[0],1.0,0.0,0.0);
 	 glRotatef(theta[1],0.0,1.0,0.0);

@@ -9,7 +9,7 @@
 void display();
 
 const int SKY_FRONT=0,SKY_RIGHT=1,SKY_LEFT=2,SKY_BACK=3,SKY_UP=4,SKY_DOWN=5; //for skybox matrix
-int prevx=0, sumfuk=0;
+int prevx=0, sumthing=0;
 GLint skybox[6],moon,x_r=0, y_r=0, z_r=0;
 GLfloat viewer[3] = {1.0f, 0.0f, 0.0f},camera[3] = {0.0f, 0.0, 0.0};
 GLdouble curr=0, prev=0,gw_spin = 0.0,angle=0.0,c_angle=90.0,gw_width = 8.0, gw_radius=45.0;
@@ -38,7 +38,7 @@ void initSky()
 void initLights()
 {
 
-	GLfloat whiteSpecularMaterial[] = {10.0,10.0,10.0},light_post0[]={100.0,-10.0,10.0,1.0};
+	GLfloat whiteSpecularMaterial[] = {10.0,10.0,10.0},light_post0[]={100.0,-00.0,10.0,1.0};
 	GLfloat whiteSpecularLight[] = {10.0, 10.0, 10.0},blackAmbientLight[] = {0.3, 0.3, 0.3};
 	GLfloat whiteDiffuseLight[] = {1.0, 1.0, 1.0},mShininess[] = {50},twoModel[]={GL_TRUE}; 
 	GLfloat whiteSpotlight[] = {0.0,100.0,0.0};
@@ -118,11 +118,11 @@ void Draw_Skybox(float x, float y, float z, float width, float height, float len
 
 void display(){
 	glutFullScreen();
-	if(sumfuk==0) //U wan sum fuk?
+	if(sumthing==0) //U wan sum thing?
 	{
 		initLights();
 		initSky();
-		sumfuk=1;
+		sumthing=1;
 	}
 	glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -181,4 +181,9 @@ void passiveMouse(int x, int y)
 	prevx=x;
 }
 
-
+// this links to the menu functionality. Fix this.
+void menufunc(int value){
+	glutAttachMenu(GLUT_LEFT_BUTTON);
+	glutAddMenuEntry("reset", 0);
+	glutAddMenuEntry("exit", 1);
+}

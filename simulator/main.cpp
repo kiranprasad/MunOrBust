@@ -56,10 +56,15 @@ void windowSpecial(int key,int x,int y){
 	{
 		
 		y_r+=3;	
+		theta[0]+=0.5;
+		theta[2]+=0.5;
 	}
 	if(key== GLUT_KEY_DOWN)
 	{
 		y_r-=3;
+		theta[0]-=0.5;
+		theta[2]-=0.5;
+		cout << theta[0] <<" "<<theta[2]<<endl;
 	}
 	if(key==GLUT_KEY_RIGHT) {
 		x_r+=3;
@@ -111,7 +116,7 @@ void  kb(unsigned char key, int x, int y)
 		if(terrainviewer[0]>0.0 && terrainviewer[2]>0.0 && terrainviewer[0]<400.0 && terrainviewer[2]<400.0){
 			terrainviewer[0]+=0.25;
 			terrainviewer[2]+=0.25;
-			//quadcalc();
+		//quadcalc();
 		}
 
 	}
@@ -119,20 +124,27 @@ void  kb(unsigned char key, int x, int y)
 
 	if(key=='d'){
 
-		theta[1]++;
+		theta[1]-=0.25;
 		display();
 			}
 
 
 	if(key=='a'){
 
-		theta[1]--;
+		theta[1]+=0.25;
 		display();	
 	}
 
+	if(key=='r'){
 
-
-
+		theta[0]=0;
+		theta[1]=0;
+		theta[2]=0;
+		terrainviewer[0]=400.0;
+		terrainviewer[1]=50.0;
+		terrainviewer[2]=400.0;
+		
+	}
 
 }
 
@@ -162,6 +174,7 @@ int main(int argc, char** argv){
 		glutMotionFunc(handleMouse);
 		glutPassiveMotionFunc(passiveMouse);
 		glutIdleFunc(displayall);
+		glutCreateMenu(menufunc); //take care of this
 		glutSpecialFunc(windowSpecial);
 		glutMainLoop();
 	return 0; 
