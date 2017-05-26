@@ -38,7 +38,7 @@ void strings(){
 	glColor3f(1.0,1.0,0.0);
 	bmprender("1PE14CS055",30,40,2);
 	bmprender("1PE14CS071",53,40,2);
-		glColor3f(0.0,0.0,1.0);
+	glColor3f(0.0,0.0,1.0);
 	bmprender("Press any key to proceed",40	,30,2);
 	glFlush();
 }

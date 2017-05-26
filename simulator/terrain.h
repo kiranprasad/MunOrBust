@@ -31,7 +31,6 @@ const char* str = "PAUSE";
 /************************************norm class starts here****************************************/
 
 class norm{
-
 	GLdouble VecX;
 	GLdouble VecY;
 	GLdouble VecZ;

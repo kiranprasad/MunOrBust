@@ -8,6 +8,7 @@
 
 void display();
 
+
 const int SKY_FRONT=0,SKY_RIGHT=1,SKY_LEFT=2,SKY_BACK=3,SKY_UP=4,SKY_DOWN=5; //for skybox matrix
 int prevx=0, sumthing=0;
 GLint skybox[6],moon,x_r=0, y_r=0, z_r=0;
